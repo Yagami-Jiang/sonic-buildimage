@@ -28,12 +28,18 @@
         {
             "bmc":
             {
-                "valmap": { "1":"INTAKE", "0":"EXHAUST" }
+                "valmap": { "1":"INTAKE", "0":"EXHAUST"}
             }
         },
         "psu_led_color":
         {
             "colmap": {"green":"green", "red":"red"}
+        },
+        "psu_power_good":
+        {
+            "bmc": {
+                "valmap": { "0x0180":true}
+            }
         },
         "PSU_FAN_MAX_SPEED":"29000"
     },
@@ -60,10 +66,6 @@
             }
         },
 
-        "fan_master_led_color":
-        {
-            "colmap": {"green":"green", "amber":"amber", "red": "red", "off": "off"}
-        },
         "FAN_MAX_RPM_SPEED":
         {
             "0": {"Front": "30200", "Rear": "32000"},
