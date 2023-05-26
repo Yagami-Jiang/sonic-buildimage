@@ -65,7 +65,7 @@ class Fan(PddfFan):
         direction_cmd = Fan_Direction_Cmd.format(fan_index - 1)
         status, direction = self.helper.ipmi_raw(direction_cmd)
         if status:
-            direction = "INTAKE" if str(int(direction, 16)) == "1" else "EXHAUST"
+            direction = str(int(direction, 16))
             f_r_fan = "Front" if fan_name.endswith("1") else "Rear"
             max_fan_rpm = eval(self.plugin_data['FAN']['FAN_MAX_RPM_SPEED'][direction][f_r_fan])
             speed_percentage = round(speed_rpm / max_fan_rpm * 100)
