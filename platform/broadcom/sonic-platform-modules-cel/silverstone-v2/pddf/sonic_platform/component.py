@@ -20,6 +20,7 @@ Sw_Cpld1_Cmd = "i2cget -y -f 108 0x30 0 | tr a-z A-Z | cut -d 'X' -f 2"
 Sw_Cpld2_Cmd = "i2cget -y -f 108 0x31 0 | tr a-z A-Z | cut -d 'X' -f 2"
 Main_BMC_Cmd = "0x32 0x8f 0x08 0x01"
 Backup_BMC_Cmd = "0x32 0x8f 0x08 0x01"
+
 COMPONENT_NAME_LIST = ["FPGA", "COME_CPLD", "SWCPLD1", "SWCPLD2", "FANCPLD", "SYSCPLD",
                        "Main_BMC", "Backup_BMC", "Main_BIOS", "Backup_BIOS"]
 COMPONENT_DES_LIST = ["Used for managering the CPU and expanding I2C channels",
@@ -93,8 +94,13 @@ class Component(ComponentBase):
             return version
 
     def __get_fpga_version(self):
-        # TODO need to overwrite -- Yagami
-        return "N/A"
+        """
+        Get fpga version by fpga version bus path.
+        """
+        status, fpga_version = self.helper.run_command("cat %s" % FPGA_VERSION_PATH)
+        if not status:
+            return "N/A"
+        return fpga_version.replace("0x", "")
 
     def __get_bmc_version(self):
         """
