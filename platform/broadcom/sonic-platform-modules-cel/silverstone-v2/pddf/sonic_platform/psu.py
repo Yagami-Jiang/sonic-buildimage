@@ -30,6 +30,21 @@ class Psu(PddfPsu):
     def get_type():
         return 'AC'
 
+    def get_status(self):
+        """
+        Get PSU1/2 Status by sensor list information
+        return: True or False
+        """
+        if not os.path.exists(sensor_list_config.Sensor_List_Info):
+            cmd = "ipmitool sensor list > %s" % sensor_list_config.Sensor_List_Info
+            cmd_status, sensor_info = self.helper.run_command(cmd)
+        cmd = "cat %s | grep PSU%d_Status" % (sensor_list_config.Sensor_List_Info, self.psu_index)
+        cmd_status, sensor_info = self.helper.run_command(cmd)
+        if cmd_status:
+            return True if sensor_info.split("|")[3].strip() == "0x0180" else False
+        else:
+            return False
+        
     def get_revision(self):
         """
         Get PSU HW Revision by read psu eeprom data.
