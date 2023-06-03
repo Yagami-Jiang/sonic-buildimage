@@ -12,9 +12,6 @@ try:
     from . import helper
     from . import component
     from .watchdog import Watchdog
-    import subprocess
-    from .event import XcvrEvent
-    from sonic_py_common import logger
     from sonic_platform_pddf_base.pddf_chassis import PddfChassis
 except ImportError as e:
     raise ImportError(str(e) + "- required module not found")
