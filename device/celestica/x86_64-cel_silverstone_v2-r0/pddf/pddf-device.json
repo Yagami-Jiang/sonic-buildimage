@@ -1646,7 +1646,6 @@
                 "attr_list":
                 [
                     {"attr_name":"psu_present", "bmc_cmd":"ipmitool raw 0x3a 0x26 0x03 0x07", "raw": "1", "type":"raw"},
-                    {"attr_name":"psu_power_good", "bmc_cmd":"ipmitool sensor list", "raw": "0", "field_name":"PSU1_Status", "separator":"|", "field_pos":"4"},
                     {"attr_name":"psu_model_name", "bmc_cmd":"ipmitool fru print 3", "raw": "0", "field_name":"Board Part Number", "separator":": ","field_pos":"2"},
                     {"attr_name":"psu_serial_num", "bmc_cmd":"ipmitool fru print 3", "raw": "0", "field_name":"Board Serial", "separator":": ","field_pos":"2"},
                     {"attr_name":"psu_mfr_id", "bmc_cmd":"ipmitool fru print 3", "raw": "0", "field_name":"Board Mfg", "separator":": ", "field_pos":"2"},
@@ -1674,7 +1673,6 @@
                 "attr_list":
                 [
                     {"attr_name":"psu_present", "bmc_cmd":"ipmitool raw 0x3a 0x26 0x03 0x08", "raw": "1", "type":"raw"},
-                    {"attr_name":"psu_power_good", "bmc_cmd":"ipmitool sensor list", "raw": "0", "field_name":"PSU2_Status", "separator":"|", "field_pos":"4"},
                     {"attr_name":"psu_model_name", "bmc_cmd":"ipmitool fru print 4", "raw": "0", "field_name":"Board Part Number", "separator":": ","field_pos":"2"},
                     {"attr_name":"psu_serial_num", "bmc_cmd":"ipmitool fru print 4", "raw": "0", "field_name":"Board Serial", "separator":": ","field_pos":"2"},
                     {"attr_name":"psu_mfr_id", "bmc_cmd":"ipmitool fru print 4", "raw": "0", "field_name":"Board Mfg", "separator":": ", "field_pos":"2"},
