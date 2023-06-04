@@ -68,7 +68,7 @@ class Component(ComponentBase):
         elif result.strip() == "03" and self.name == "Backup_BIOS":
             return bios_version.strip()
         else:
-            return bios_version
+            return "N/A"
 
     def __get_cpld_version(self):
         """
