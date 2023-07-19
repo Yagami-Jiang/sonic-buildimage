@@ -16,13 +16,10 @@ try:
 except ImportError as e:
     raise ImportError(str(e) + "- required module not found")
 
-HOST_REBOOT_CAUSE_PATH = "/host/reboot-cause/"
-REBOOT_CAUSE_FILE = "reboot-cause.txt"
-WATCHDOG_TIMELEFT_PATH = "/sys/class/watchdog/watchdog0/timeleft"
-GET_REBOOT_CAUSE = "0x3a 0x64 0x00 0x01 0x06"
+
 SET_SYS_STATUS_LED = "0x3A 0x39 0x2 0x0 {}"
 SET_LED_MODE_Manual = "0x3a 0x42 0x02 0x00"
-
+REBOOT_CAUSE_PATH = "/sys/devices/platform/cpld_wdt/reason"
 
 class Chassis(PddfChassis):
     """
@@ -62,7 +59,6 @@ class Chassis(PddfChassis):
         return self.get_system_led("SYS_LED")
 
     def set_status_led(self, color):
-        print("rancho test {}".format(color))
         if color == self.get_status_led():
             return False
 
@@ -121,25 +117,18 @@ class Chassis(PddfChassis):
             REBOOT_CAUSE_HARDWARE_OTHER = "Hardware - Other"
             REBOOT_CAUSE_NON_HARDWARE = "Non-Hardware"
         """
-        reboot_cause_path = (HOST_REBOOT_CAUSE_PATH + REBOOT_CAUSE_FILE)
-        sw_reboot_cause = self.helper.read_txt_file(reboot_cause_path) or "Unknown"
-        status_wat, val = self.helper.run_command("cat %s" % WATCHDOG_TIMELEFT_PATH)
-        status, hw_reboot_cause = self.helper.ipmi_raw(GET_REBOOT_CAUSE)
-        if float(val) <= 1 and float(hw_reboot_cause) == 44:
-            hw_reboot_cause = "66"
+        reboot_cause = self.helper.read_txt_file(REBOOT_CAUSE_PATH) or "Unknown"
 
-        prev_reboot_cause = {
-            '11': (self.REBOOT_CAUSE_POWER_LOSS, "The last reset is Power on reset"),
-            '22': (self.REBOOT_CAUSE_HARDWARE_OTHER, "The last reset is soft-set CPU warm reset"),
-            '33': (self.REBOOT_CAUSE_NON_HARDWARE, "The last reset is CPU cold reset"),
-            '44': (self.REBOOT_CAUSE_NON_HARDWARE, "The last reset is CPU warm reset"),
-            '66': (self.REBOOT_CAUSE_WATCHDOG, "The last reset is watchdog reset"),
+        reboot_cause_description = {
+            '0x11': (self.REBOOT_CAUSE_POWER_LOSS, "Power Loss"),
+            '0x22': (self.REBOOT_CAUSE_NON_HARDWARE, "The last reset is soft-set CPU warm reset"),
+            '0x33': (self.REBOOT_CAUSE_NON_HARDWARE, "The last reset is CPU cold reset"),
+            '0x44': (self.REBOOT_CAUSE_NON_HARDWARE, "The last reset is CPU warm reset"),
+            '0x66': (self.REBOOT_CAUSE_WATCHDOG, "The last reset is Hardware Watchdog Reset"),
 
-        }.get(hw_reboot_cause, (self.REBOOT_CAUSE_HARDWARE_OTHER, 'Unknown reason'))
-
-        if sw_reboot_cause != 'Unknown':
-            prev_reboot_cause = (self.REBOOT_CAUSE_NON_HARDWARE, sw_reboot_cause)
-
+        }
+        prev_reboot_cause = reboot_cause_description.get(reboot_cause,
+                                                         (self.REBOOT_CAUSE_NON_HARDWARE, "Unknown reason"))
         return prev_reboot_cause
 
     def get_watchdog(self):
