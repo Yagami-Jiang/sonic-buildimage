@@ -65,8 +65,8 @@
             "pddf_custom_led_module",
             "pddf_custom_wdt",
             "pddf_custom_fpga_algo",
-            "pddf_fan_driver_module",
-            "pddf_psu_driver_module",
+            "pddf_custom_fan_driver_module",
+            "pddf_custom_psu_driver_module",
             "tps536c7"
         ]
     },
