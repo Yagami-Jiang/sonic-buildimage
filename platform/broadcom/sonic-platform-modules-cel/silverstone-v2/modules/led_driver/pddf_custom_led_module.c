@@ -279,7 +279,6 @@ ssize_t set_status_led(struct device_attribute *da)
     if (strcmp(ops_ptr->data[cur_state].attr_devtype, "cpld") == 0) {
         ret = board_i2c_cpld_write_new(ops_ptr->swpld_addr, ops_ptr->attr_devname, ops_ptr->swpld_addr_offset, new_val);
         read_val = board_i2c_cpld_read_new(ops_ptr->swpld_addr, ops_ptr->attr_devname, ops_ptr->swpld_addr_offset);
-	printk("ret=%d  write_new_val=%d read_val=%d, swpld_addr=%d, swpld_addr_offset=%d", ret, new_val, read_val, ops_ptr->swpld_addr, ops_ptr->swpld_addr_offset);
     } else if (strcmp(ops_ptr->data[cur_state].attr_devtype, "fpgai2c") == 0) {
         ret = board_i2c_fpga_write(ops_ptr->swpld_addr, ops_ptr->swpld_addr_offset, (uint8_t)new_val);
         read_val = board_i2c_fpga_read(ops_ptr->swpld_addr, ops_ptr->swpld_addr_offset);
