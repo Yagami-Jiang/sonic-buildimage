@@ -34,6 +34,7 @@ def write_sensor_list_info():
 
 
 if __name__ == '__main__':
-    while 1:
-        write_sensor_list_info()
-        time.sleep(refresh_interval)
+    if os.popen("cat /usr/local/bin/bmc_present").read().strip() == "True":
+        while 1:
+            write_sensor_list_info()
+            time.sleep(refresh_interval)
