@@ -12,7 +12,6 @@ except ImportError as e:
     raise ImportError(str(e) + "- required module not found")
 
 PSU_STATUS_INFO_CMD = "i2cget -y -f 100 0x0d 0x60"
-MFR_ID = "DELTA"
 
 
 class Psu(PddfPsu):
@@ -21,7 +20,6 @@ class Psu(PddfPsu):
     def __init__(self, index, pddf_data=None, pddf_plugin_data=None):
         PddfPsu.__init__(self, index, pddf_data, pddf_plugin_data)
         self.helper = helper.APIHelper()
-        self.get_mfr_id = self.get_mfr_id()
 
     @staticmethod
     def get_capacity():
@@ -64,4 +62,3 @@ class Psu(PddfPsu):
         return: HW Revision or 'N/A'
         """
         return "N/A"
-
