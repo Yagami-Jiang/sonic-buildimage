@@ -10,7 +10,7 @@ try:
 except ImportError as e:
     raise ImportError(str(e) + "- required module not found")
 
-FPGA_VERSION_PATH = "/sys/devices/platform/fpga-sys/version"
+FPGA_VERSION_PATH = "/sys/bus/platform/devices/fpga_sysfs/version"
 Check_Bios_Boot = "i2cget -y -f 100 0x0d 0x70 | tr a-z A-Z | cut -d 'X' -f 2"
 Bios_Version_Cmd = "dmidecode -t bios | grep Version"
 Fan_CPLD_Cmd = "i2cget -y -f 107 0x0d 0x00 | tr a-z A-Z | cut -d 'X' -f 2"
