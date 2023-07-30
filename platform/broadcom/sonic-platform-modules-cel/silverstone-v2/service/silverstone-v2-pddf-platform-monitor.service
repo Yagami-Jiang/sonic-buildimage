@@ -1,11 +1,13 @@
 [Unit]
 Description=Silverstone-V2 Platform Fans Control service
-Before=pmon.service
-After=pddf-platform-init.service
+After=pmon.service
 DefaultDependencies=no
 
 [Service]
 ExecStart=/usr/local/bin/FanControl/FanControl.py
+ExecReload=/usr/local/bin/FanControl/FanControl.py
+Restart=always
+RestartSec=30s
 KillSignal=SIGKILL
 SuccessExitStatus=SIGKILL
 
