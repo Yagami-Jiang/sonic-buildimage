@@ -24,6 +24,7 @@ except ImportError as e:
 
 FUNCTION_NAME = "FanControl"
 ERROR_COLOR = "amber"
+NORMAL_COLOR = "green"
 DUTY_MAX = 100
 FAN_NUMBER = 7
 PSU_NUMBER = 2
@@ -107,8 +108,8 @@ class FanControl(object):
         """
         fan_presence_list = [True, True, True, True, True, True, True]  # Default state: fans are OK
         for fan_drawer_index in range(FAN_NUMBER):
-            fan_presence = self.platform_chassis_obj.get_fan(fan_drawer_index).get_presence()
-            fan_status = self.platform_chassis_obj.get_fan(fan_drawer_index).get_status()
+            fan_presence = self.platform_chassis_obj.get_fan_drawer(fan_drawer_index).get_presence()
+            fan_status = self.platform_chassis_obj.get_fan_drawer(fan_drawer_index).get_status()
             if not all([fan_presence, fan_status]):
                 fan_presence_list[fan_drawer_index] = False
                 self.syslog.warning("Fan Drawer-%s has error,presence:%s, status:%s"
@@ -144,15 +145,10 @@ class FanControl(object):
                 fan_rpm_error_list.append(fan_name)
             if fan_name.endswith("2") and (fan_speed_rpm not in range(Fan_Rear_MIN, Fan_Rear_MAX + 1)):
                 fan_rpm_error_list.append(fan_name)
-        # for fan_index_ in range(FAN_NUMBER * 2):
-        #     fan_name = self.platform_chassis_obj.get_fan(fan_index_).get_name()
-        #     fan_speed_rpm = self.platform_chassis_obj.get_fan(fan_index_).get_speed_rpm()
-        #     if fan_name.endswith("1") and (fan_speed_rpm not in range(Fan_Front_MIN, Fan_Front_MAX+1)):
-        #         fan_rpm_error_list.append(fan_name)
-        #     if fan_name.endswith("2") and (fan_speed_rpm not in range(Fan_Rear_MIN, Fan_Rear_MAX+1)):
-        #         fan_rpm_error_list.append(fan_name)
         if not fan_rpm_error_list:
-            return
+            for fan_drawer_index in range(FAN_NUMBER):
+                self.platform_chassis_obj.get_fan_drawer(fan_drawer_index).set_status_led(NORMAL_COLOR)
+            return None
         if len(fan_rpm_error_list) >= 2:
             self.syslog.warning("%s rpm less than the set minimum speed. "
                                 "Will increase the fan speed to 100%%" % fan_rpm_error_list)
@@ -164,10 +160,10 @@ class FanControl(object):
             logging.warning("%s rpm less than the set minimum speed. Fans pwm isn't changed" % fan_rpm_error_list)
 
         fan_modules_index_list = list(set(int(re.findall(r"Fantray(\d)_\d", x)[0]) for x in fan_rpm_error_list))
-        for error_fan in fan_modules_index_list:
-            self.syslog.warning("Fantray%d will be set to %s " % (error_fan, ERROR_COLOR))
-            logging.warning("Fantray%d will be set to %s " % (error_fan, ERROR_COLOR))
-            self.platform_chassis_obj.get_fan(error_fan).set_status_led(ERROR_COLOR)
+        for error_fan_drawer in fan_modules_index_list:
+            self.syslog.warning("Fantray%d will be set to %s " % (error_fan_drawer, ERROR_COLOR))
+            logging.warning("Fantray%d will be set to %s " % (error_fan_drawer, ERROR_COLOR))
+            self.platform_chassis_obj.get_fan_drawer(error_fan_drawer - 1).set_status_led(ERROR_COLOR)
 
         self.syslog.warning("The STA front panel light will be set to %s" % ERROR_COLOR)
         logging.warning("The STA front panel light will be set to %s " % ERROR_COLOR)
@@ -229,7 +225,7 @@ def handler(signum, frame):
     fan_index = 1
     for fan in platform_chassis.get_all_fans():
         set_stat = fan.set_speed(DUTY_MAX)
-        fan_drawer = fan_index//2
+        fan_drawer = fan_index // 2
         if not set_stat:
             set_error.append(fan_drawer)
         fan_index += 1
