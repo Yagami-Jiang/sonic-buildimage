@@ -17,7 +17,6 @@
         ],
         "PSU":
         [
-            "psu_eeprom",
             "psu_pmbus"
         ],
         "FAN":
